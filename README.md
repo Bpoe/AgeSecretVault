@@ -18,6 +18,36 @@ Each secret is one file, and all secrets live under a configured root directory.
 - [Microsoft.PowerShell.SecretManagement](https://www.powershellgallery.com/packages/Microsoft.PowerShell.SecretManagement)
 - [age](https://github.com/FiloSottile/age) installed and available on `PATH`
 
+## Getting Started
+
+Install age with winget:
+
+```powershell
+winget install FiloSottile.age
+```
+
+Generate an age identity file:
+
+```powershell
+New-Item -ItemType Directory -Force -Path "$Env:USERPROFILE\.config\age" | Out-Null
+age-keygen -o "$Env:USERPROFILE\.config\age\keys.txt"
+```
+
+The generated `keys.txt` file contains your private key and prints the matching public key. Keep `keys.txt` private.
+
+Create your secrets directory and add the public key to `.age-recipients.txt`:
+
+```powershell
+New-Item -ItemType Directory -Force -Path "C:\git\homelab\secrets" | Out-Null
+Set-Content -Path "C:\git\homelab\secrets\.age-recipients.txt" -Value "age1...your-public-key-here..."
+```
+
+If you need to recover the public key later from your private key file:
+
+```powershell
+age-keygen -y "$Env:USERPROFILE\.config\age\keys.txt"
+```
+
 ## Secret Storage Model
 
 The vault uses a directory you provide as the root path.
